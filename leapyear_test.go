@@ -9,12 +9,11 @@ func TestLeapYear01(t *testing.T) {
     year     int
     expected bool
     }{
-        {2000, true}, 
-        {1900, false}, 
-        {2024, true},  
-        {2023, false}, 
-        {1600, true}, 
-        {2100, false}, 
+        {2000, true},   // Return true for the year is divisible by both 4 and 100 but it is divisible by 400 
+        {2024, true},   // Return true for the year is divisible by 4
+        {2023, false},  // Return false for any year 
+        {2100, false},  // Return false for the year is divisible by 4 but it is divisible by 100
+        {1, false},  // Return false for any year
     }
 	for _, test := range tests {
         expected := leapyear(test.year)
