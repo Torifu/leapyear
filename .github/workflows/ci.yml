@@ -1,31 +1,38 @@
-runs-on: ubuntu-latest
+# .github/workflows/ci.yml
 
-steps:
-- uses: actions/checkout@v3
+name: Go CI
 
-- name: Set up Go
-  uses: actions/setup-go@v2
-  with:
-    go-version: '1.18.x'
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-- name: Cache Go modules
-  uses: actions/cache@vs3
-  with:
-    path: |
-      ~/.cache/go-build
-      ~/go/pkg/mod
-    key: $-go-$
-    restore-keys: |
-      $-go-
+jobs:
+  test:
+    runs-on: ubuntu-latest
 
-- name: Install dependencies
-  run: go mod tidy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-- name: Run tests
-  run: go test -v ./... ``` > This workflow will run on every push and pull request to the `main` branch. It checks out the code, sets up Go, caches Go modules, installs dependencies, and runs tests. 3. Commit the `ci.yml` file:
-- Use the following commands to commit the CI configuration:
-```sh
-git add .github/workflows/ci.yml
-git commit -m "Add GitHub Actions CI configuration"
-git push origin main
-```
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.18.x'
+
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Install dependencies
+        run: go mod tidy
+
+      - name: Run tests
+        run: go test -v ./...
